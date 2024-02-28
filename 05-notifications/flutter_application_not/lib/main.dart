@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_not/config/local_notifications/local_notifications.dart';
 import 'package:flutter_application_not/config/router/app_router.dart';
 import 'package:flutter_application_not/config/theme/app_theme.dart';
 import 'package:flutter_application_not/presentation/blocs/notifications/notifications_bloc.dart';
@@ -10,6 +11,7 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await NotificationsBloc.initializeFCM();
+  await LocalNotifications.initializeLocalNotifications();
 
   runApp(
     MultiBlocProvider(
@@ -30,6 +32,50 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme().getTheme(),
       routerConfig: appRouter,
+      builder: (context, child) =>
+          HandleNotificationInteractions(child: child!),
     );
+  }
+}
+
+class HandleNotificationInteractions extends StatefulWidget {
+  final Widget child;
+  const HandleNotificationInteractions({super.key, required this.child});
+
+  @override
+  State<HandleNotificationInteractions> createState() =>
+      _HandleNotificationInteractionsState();
+}
+
+class _HandleNotificationInteractionsState
+    extends State<HandleNotificationInteractions> {
+  Future<void> setupInteractedMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    context.read<NotificationsBloc>().handleRemoteMessage(message);
+
+    final messageId =
+        message.messageId?.replaceAll(':', '').replaceAll('%', '') ?? '';
+    appRouter.push("/push-details/$messageId");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setupInteractedMessage();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
