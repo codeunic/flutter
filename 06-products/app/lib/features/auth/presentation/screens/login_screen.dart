@@ -78,12 +78,18 @@ class _LoginForm extends ConsumerWidget {
           const SizedBox(height: 90),
           CustomTextFormField(
             label: 'Correo',
+            onFormSubmitted: (_) {
+              ref.read(loginFormProvider.notifier).onFormSubmit();
+            },
             keyboardType: TextInputType.emailAddress,
             onChanged: ref.read(loginFormProvider.notifier).onEmailChange,
             errorMessage: loginForm.isFormPosted ? loginForm.email.errorMessage : null,
           ),
           const SizedBox(height: 30),
           CustomTextFormField(
+            onFormSubmitted: (_) {
+              ref.read(loginFormProvider.notifier).onFormSubmit();
+            },
             label: 'Contraseña',
             obscureText: true,
             onChanged: ref.read(loginFormProvider.notifier).onPasswordChange,
