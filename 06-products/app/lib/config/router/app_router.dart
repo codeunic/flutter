@@ -16,8 +16,6 @@ final goRouterProvider = Provider((ref) {
         path: '/splash',
         builder: (context, state) => const CheckAuthStatusScreen(),
       ),
-
-      ///* Auth Routes
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
@@ -26,11 +24,15 @@ final goRouterProvider = Provider((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-
-      ///* Product Routes
       GoRoute(
         path: '/',
         builder: (context, state) => const ProductsScreen(),
+      ),
+      GoRoute(
+        path: '/product/:id',
+        builder: (context, state) => ProductScreen(
+          productId: state.params['id'] ?? 'no-id',
+        ),
       ),
     ],
     redirect: (context, state) {

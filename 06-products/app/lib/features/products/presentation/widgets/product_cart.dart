@@ -13,7 +13,10 @@ class ProductCard extends StatelessWidget {
     return Column(
       children: [
         _Image(images: product.images),
-        Text(product.title),
+        Text(
+          product.title,
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: 20),
       ],
     );
@@ -45,8 +48,8 @@ class _Image extends StatelessWidget {
       child: FadeInImage(
         fit: BoxFit.cover,
         height: 250,
-        fadeOutDuration: const Duration(microseconds: 100),
-        fadeInDuration: const Duration(microseconds: 200),
+        fadeOutDuration: const Duration(milliseconds: 100),
+        fadeInDuration: const Duration(milliseconds: 200),
         image: NetworkImage(images.first),
         placeholder: const AssetImage('assets/loaders/bottle-loader.gif'),
       ),
