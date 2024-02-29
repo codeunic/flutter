@@ -26,9 +26,19 @@ class ProductsDataSourcesImpl extends ProductsDataSource {
   }
 
   @override
-  Future<Product> getProductById(String id) {
-    // TODO: implement getProductById
-    throw UnimplementedError();
+  Future<Product> getProductById(String id) async {
+    try {
+      final response = await dio.get("/products/$id");
+      return ProductMapper.jsonToEntity(response.data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        throw ProductNotFound();
+      }
+
+      rethrow;
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override

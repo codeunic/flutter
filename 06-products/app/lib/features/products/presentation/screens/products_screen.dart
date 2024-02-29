@@ -52,8 +52,8 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
 
   @override
   void dispose() {
-    scrollController.dispose();
     super.dispose();
+    scrollController.dispose();
   }
 
   @override
